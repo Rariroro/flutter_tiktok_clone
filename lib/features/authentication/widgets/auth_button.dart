@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/authentication/widgets/email_screen.dart';
+import 'package:flutter_tiktok_clone/features/authentication/username_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AuthButton extends StatelessWidget {
@@ -18,7 +18,7 @@ class AuthButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(context, const EmailScreen()),
+      onTap: () => onTap(context, const UsernameScreen()),
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Container(
