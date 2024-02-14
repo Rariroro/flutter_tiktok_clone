@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/authentication/username_screen.dart';
+import 'package:flutter_tiktok_clone/features/authentication/widgets/username_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AuthButton extends StatelessWidget {

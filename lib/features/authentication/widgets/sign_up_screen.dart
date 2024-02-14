@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/authentication/login_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/auth_button.dart';
+import 'package:flutter_tiktok_clone/features/authentication/widgets/login_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignUpScreen extends StatelessWidget {
