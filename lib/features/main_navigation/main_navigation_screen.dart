@@ -57,7 +57,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   void _handleTapDown(TapDownDetails details) {
     setState(() {
-      scale = 1.1;
+      scale = 1.3;
     });
   }
 
@@ -103,10 +103,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     });
                   },
                   onTap: _onPostVideoButtonTap,
-                  child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      child: Transform.scale(
-                          scale: scale, child: const PostVideoButton()))),
+                  child: AnimatedScale(
+                      scale: scale,
+                      duration: const Duration(milliseconds: 900),
+                      child: const PostVideoButton())),
               Gaps.h24,
               NavTab(
                 text: 'Inbox',
