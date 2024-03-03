@@ -4,6 +4,7 @@ import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/nav_tab.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/post_video_button.dart';
+import 'package:flutter_tiktok_clone/features/videos/video_timeline_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -70,7 +71,26 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: screens[_selectIndex],
+      body: Stack(
+        children: [
+          Offstage(
+            offstage: _selectIndex != 0,
+            child: const VideoTimelineScreen(),
+          ),
+          Offstage(
+            offstage: _selectIndex != 1,
+            child: Container(),
+          ),
+          Offstage(
+            offstage: _selectIndex != 3,
+            child: Container(),
+          ),
+          Offstage(
+            offstage: _selectIndex != 4,
+            child: Container(),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         height: 99,
         color: Colors.black,
@@ -105,7 +125,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   onTap: _onPostVideoButtonTap,
                   child: AnimatedScale(
                       scale: scale,
-                      duration: const Duration(milliseconds: 900),
+                      duration: const Duration(milliseconds: 300),
                       child: const PostVideoButton())),
               Gaps.h24,
               NavTab(
