@@ -28,17 +28,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 child: Text('니꼬'),
               ),
               Positioned(
-                width: 25,
-                left: 28,
-                top: 28,
-                height: 25,
+                // width: 25,
+                //left: 28,
+                // top: 28,
+                // height: 25,
+                bottom: -4,
+                right: -4,
                 child: Container(
+                  width: 25,
+                  height: 25,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.green,
                     border: Border.all(color: Colors.white, width: 5),
                   ),
-                  width: 25,
                 ),
               )
             ],
