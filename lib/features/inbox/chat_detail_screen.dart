@@ -71,6 +71,118 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           ),
         ),
       ),
+      body: Stack(
+        children: [
+          ListView.separated(
+              padding: const EdgeInsets.symmetric(
+                vertical: Sizes.size20,
+                horizontal: Sizes.size14,
+              ),
+              itemBuilder: (context, index) {
+                final isMine = index % 2 == 0;
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment:
+                      isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(Sizes.size14),
+                      decoration: BoxDecoration(
+                        color: isMine
+                            ? Colors.blue
+                            : Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(
+                            Sizes.size20,
+                          ),
+                          topRight: const Radius.circular(
+                            Sizes.size20,
+                          ),
+                          bottomLeft: isMine
+                              ? const Radius.circular(Sizes.size20)
+                              : const Radius.circular(Sizes.size5),
+                          bottomRight: Radius.circular(
+                              isMine ? Sizes.size5 : Sizes.size20),
+                        ),
+                      ),
+                      child: const Text(
+                        "this is message!",
+                        style: TextStyle(
+                            color: Colors.white, fontSize: Sizes.size16),
+                      ),
+                    ),
+                  ],
+                );
+              },
+              separatorBuilder: (context, index) => Gaps.v10,
+              itemCount: 10),
+          Positioned(
+              bottom: 0,
+              width: MediaQuery.of(context).size.width,
+              child: BottomAppBar(
+                color: Colors.grey.shade50,
+                surfaceTintColor: Colors.grey.shade50,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        onTap: () => (),
+                        expands: true,
+                        minLines: null,
+                        maxLines: null,
+                        textInputAction: TextInputAction.newline,
+                        decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size12,
+                              horizontal: Sizes.size10,
+                            ),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.circular(Sizes.size24),
+                                borderSide: BorderSide.none),
+                            hintText: "Send a message...",
+                            hintStyle: const TextStyle(
+                                fontSize: Sizes.size20,
+                                fontWeight: FontWeight.w400),
+                            fillColor: Colors.white,
+                            filled: true,
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const FaIcon(
+                                    FontAwesomeIcons.faceSmile,
+                                    size: Sizes.size28,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ),
+                    Gaps.h20,
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade300),
+                        child: const Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.solidPaperPlane,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
     );
   }
 }
