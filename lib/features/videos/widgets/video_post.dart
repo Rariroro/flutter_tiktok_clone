@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
@@ -46,6 +47,9 @@ class _VideoPostState extends State<VideoPost>
     await _videoPlayerController.initialize();
     await _videoPlayerController.setLooping(true);
 
+    if (kIsWeb) {
+      await _videoPlayerController.setVolume(0);
+    }
     _videoPlayerController.addListener(_onVideoChange);
     setState(() {});
   }
@@ -71,6 +75,7 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) return;
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
@@ -113,6 +118,15 @@ class _VideoPostState extends State<VideoPost>
       builder: (context) => const VideoComments(),
     );
     _onTogglePause();
+  }
+
+  void _onVolumButton() async {
+    if (_videoPlayerController.value.volume != 0) {
+      await _videoPlayerController.setVolume(0);
+    } else {
+      _videoPlayerController.setVolume(0.3);
+    }
+    setState(() {});
   }
 
   @override
@@ -210,6 +224,22 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: IconButton(
+              onPressed: _onVolumButton,
+              icon: _videoPlayerController.value.volume == 0
+                  ? const FaIcon(
+                      FontAwesomeIcons.volumeXmark,
+                      color: Colors.white,
+                    )
+                  : const FaIcon(
+                      FontAwesomeIcons.volumeHigh,
+                      color: Colors.white,
+                    ),
             ),
           ),
           Positioned(
