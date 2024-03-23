@@ -5,23 +5,33 @@ import 'package:flutter_tiktok_clone/features/authentication/login_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/username_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/auth_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUpScreen extends StatelessWidget {
+  static const routeURL = "/";
+  static const routeName = "signUp";
   const SignUpScreen({super.key});
 
-  void _onLoginTap(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const LoginScreen(),
-    ));
+  void _onLoginTap(BuildContext context) async {
+    context.push("/login");
   }
 
   void _onEmailTap(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const UsernameScreen(),
+    /*  Navigator.of(context).push(PageRouteBuilder(
+      transitionDuration: const Duration(seconds: 1),
+      reverseTransitionDuration: const Duration(seconds: 1),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          const UsernameScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          ScaleTransition(
+        scale: animation,
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
       ),
-    );
+    )); */
+    context.pushNamed(UsernameScreen.routeName);
   }
 
   @override

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
+import 'package:flutter_tiktok_clone/features/authentication/email_screen.dart';
+import 'package:flutter_tiktok_clone/features/authentication/login_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:flutter_tiktok_clone/features/authentication/username_screen.dart';
 import 'package:flutter_tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/main_navigation_screen.dart';
 import 'package:flutter_tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:flutter_tiktok_clone/router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +25,8 @@ class TikTokApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       title: 'TikTok Clone',
       themeMode: ThemeMode.light,
@@ -31,6 +37,7 @@ class TikTokApp extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
+        //textTheme: GoogleFonts.itimTextTheme(),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           titleTextStyle: TextStyle(
@@ -48,7 +55,6 @@ class TikTokApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SignUpScreen(),
     );
   }
 }
