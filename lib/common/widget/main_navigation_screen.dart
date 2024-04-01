@@ -9,20 +9,37 @@ import 'package:flutter_tiktok_clone/features/inbox/inbox_screen.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/nav_tab.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/post_video_button.dart';
 import 'package:flutter_tiktok_clone/features/users/user_profile_screen.dart';
-import 'package:flutter_tiktok_clone/features/videos/video_timeline_screen.dart';
+import 'package:flutter_tiktok_clone/features/videos/views/video_recording_screen.dart';
+import 'package:flutter_tiktok_clone/features/videos/views/video_timeline_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  static const routeName = "mainNavigation";
+
+  final String tab;
+
+  const MainNavigationScreen({
+    super.key,
+    required this.tab,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 1;
+  final List<String> _tabs = [
+    "home",
+    "discover",
+    "xxxx",
+    "inbox",
+    "profile",
+  ];
 
-  final screens = [
+  late int _selectedIndex = _tabs.indexOf(widget.tab);
+
+  /* final screens = [
     const Center(
       child: Text('Home'),
     ),
@@ -36,27 +53,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const Center(
       child: Text('Profile'),
     ),
-  ];
+  ]; */
 
   void _onTap(int index) {
+    context.go("/${_tabs[index]}");
     setState(() {
       _selectedIndex = index;
     });
   }
 
   void _onPostVideoButtonTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: const Text(
-              'Record video',
-            ),
-          ),
-        ),
-        fullscreenDialog: true,
-      ),
-    );
+    context.pushNamed(VideoRecordingScreen.routeName);
   }
 
   double scale = 1.0;

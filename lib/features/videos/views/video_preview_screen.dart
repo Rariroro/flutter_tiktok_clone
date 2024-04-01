@@ -56,6 +56,12 @@ class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
   }
 
   @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,

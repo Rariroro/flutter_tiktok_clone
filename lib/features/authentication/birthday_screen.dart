@@ -4,6 +4,7 @@ import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/form_button.dart';
 import 'package:flutter_tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class BirthdayScreen extends StatefulWidget {
   const BirthdayScreen({super.key});
@@ -31,12 +32,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   }
 
   void _onNextTap() {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const InterestsScreen(),
-      ),
-      (route) => false,
-    );
+    context.goNamed(InterestsScreen.routeName);
   }
 
   void _setTextFieldDate(DateTime date) {
@@ -84,9 +80,6 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
               enabled: false,
               controller: _birthdayController,
               decoration: InputDecoration(
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade400,
-                ),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.grey.shade400,
@@ -112,9 +105,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
         height: 300,
         child: SizedBox(
           child: CupertinoDatePicker(
-            mode: CupertinoDatePickerMode.date,
             maximumDate: _calculateMinimumAgeDate(),
             initialDateTime: _calculateMinimumAgeDate(),
+            mode: CupertinoDatePickerMode.date,
             onDateTimeChanged: _setTextFieldDate,
           ),
         ),

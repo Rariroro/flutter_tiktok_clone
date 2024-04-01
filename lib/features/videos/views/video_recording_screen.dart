@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/videos/video_preview_screen.dart';
+import 'package:flutter_tiktok_clone/features/videos/views/video_preview_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
+  static const String routeName = "postVideo";
+  static const String routeURL = "/upload";
+
   const VideoRecordingScreen({super.key});
 
   @override
@@ -19,6 +25,10 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   bool _hasPermission = false;
   bool _deniedPermission = false;
   bool _isSelfieMode = false;
+
+  late final bool _noCamera = kDebugMode && Platform.isIOS;
+
+  //zoom기능
   double _maxZoomLevel = 1.0;
   double _currentZoomLevel = 1.0;
 
@@ -46,7 +56,13 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   @override
   void initState() {
     super.initState();
-    initPermission();
+    if (!_noCamera) {
+      initPermission();
+    } else {
+      setState(() {
+        _hasPermission = true;
+      });
+    }
     WidgetsBinding.instance.addObserver(this);
     _progressAnimationController.addListener(
       () {
@@ -64,7 +80,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   void dispose() {
     _progressAnimationController.dispose();
     _buttonAnimationController.dispose();
-    _cameraController.dispose();
+    if (!_noCamera) {
+      _cameraController.dispose();
+    }
     super.dispose();
   }
 
@@ -72,6 +90,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (_noCamera) return;
     if (!_hasPermission) return;
     if (!_cameraController.value.isInitialized) return;
 
@@ -102,8 +121,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     await _cameraController.prepareForVideoRecording(); //iOS에서만 필요
 
     _maxZoomLevel = await _cameraController.getMaxZoomLevel();
-    print(_maxZoomLevel);
+
     _flashMode = _cameraController.value.flashMode;
+    setState(() {});
   }
 
   Future<void> initPermission() async {
@@ -210,7 +230,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
       body: SafeArea(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: !_hasPermission || !_cameraController.value.isInitialized
+          child: !_hasPermission
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -237,32 +257,42 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
               : Stack(
                   alignment: Alignment.center,
                   children: [
-                    if (!_prepareDispose) CameraPreview(_cameraController),
-                    Positioned(
-                      top: Sizes.size20,
-                      right: Sizes.size20,
-                      child: Column(
-                        children: [
-                          IconButton(
-                            color: Colors.white,
-                            onPressed: _toggleSelfieMode,
-                            icon: const Icon(
-                              Icons.cameraswitch,
+                    if (!_prepareDispose &&
+                        ((!_noCamera) && _cameraController.value.isInitialized))
+                      CameraPreview(_cameraController),
+                    const Positioned(
+                      top: Sizes.size40,
+                      left: Sizes.size20,
+                      child: CloseButton(
+                        color: Colors.white,
+                      ),
+                    ),
+                    if (!_noCamera)
+                      Positioned(
+                        top: Sizes.size20,
+                        right: Sizes.size20,
+                        child: Column(
+                          children: [
+                            IconButton(
+                              color: Colors.white,
+                              onPressed: _toggleSelfieMode,
+                              icon: const Icon(
+                                Icons.cameraswitch,
+                              ),
                             ),
-                          ),
-                          Gaps.v10,
-                          videoFlashmodeButton(
-                              FlashMode.off, Icons.flash_off_rounded),
-                          Gaps.v10,
-                          videoFlashmodeButton(
-                              FlashMode.always, Icons.flash_on_rounded),
-                          Gaps.v10,
-                          videoFlashmodeButton(
-                              FlashMode.auto, Icons.flash_auto_rounded),
-                          Gaps.v10,
-                          videoFlashmodeButton(
-                              FlashMode.torch, Icons.flashlight_on_rounded),
-                          /*  Gaps.v10,
+                            Gaps.v10,
+                            videoFlashmodeButton(
+                                FlashMode.off, Icons.flash_off_rounded),
+                            Gaps.v10,
+                            videoFlashmodeButton(
+                                FlashMode.always, Icons.flash_on_rounded),
+                            Gaps.v10,
+                            videoFlashmodeButton(
+                                FlashMode.auto, Icons.flash_auto_rounded),
+                            Gaps.v10,
+                            videoFlashmodeButton(
+                                FlashMode.torch, Icons.flashlight_on_rounded),
+                            /*  Gaps.v10,
                           IconButton(
                             color: _flashMode == FlashMode.auto
                                 ? Colors.amber.shade200
@@ -282,9 +312,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                               Icons.flashlight_on_rounded,
                             ),
                           ), */
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
                     Positioned(
                       bottom: Sizes.size40,
                       width: MediaQuery.of(context).size.width,

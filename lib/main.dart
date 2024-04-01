@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/authentication/email_screen.dart';
-import 'package:flutter_tiktok_clone/features/authentication/login_screen.dart';
-import 'package:flutter_tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:flutter_tiktok_clone/features/authentication/username_screen.dart';
-import 'package:flutter_tiktok_clone/features/inbox/activity_screen.dart';
-import 'package:flutter_tiktok_clone/features/main_navigation/main_navigation_screen.dart';
-import 'package:flutter_tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:flutter_tiktok_clone/features/videos/repos/playback_config_repo.dart';
+import 'package:flutter_tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 import 'package:flutter_tiktok_clone/router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  runApp(const TikTokApp());
+  final prefrences = await SharedPreferences.getInstance();
+  final repository = PlaybackConfigRepository(prefrences);
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => PlaybackConfigViewModel(repository),
+      ),
+    ],
+    child: const TikTokApp(),
+  ));
 }
 
 class TikTokApp extends StatelessWidget {

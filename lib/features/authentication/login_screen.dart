@@ -7,7 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
-  static String routeName = "/login";
+  static String routeName = "login";
+  static String routeURL = "/login";
   const LoginScreen({super.key});
 
   void _onSignUpTap(BuildContext context) {
@@ -15,7 +16,8 @@ class LoginScreen extends StatelessWidget {
   }
 
   void _onEmailLoginTap(BuildContext context) {
-    Navigator.of(context).push(
+    Navigator.push(
+      context,
       MaterialPageRoute(
         builder: (context) => const LoginFormScreen(),
       ),

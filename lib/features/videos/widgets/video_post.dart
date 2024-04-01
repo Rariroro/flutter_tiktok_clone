@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
+import 'package:flutter_tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 import 'package:flutter_tiktok_clone/features/videos/widgets/video_button.dart';
 import 'package:flutter_tiktok_clone/features/videos/widgets/video_comments.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -27,6 +29,8 @@ class _VideoPostState extends State<VideoPost>
   late final VideoPlayerController _videoPlayerController;
 
   bool _isPaused = false;
+  late bool _isMuted;
+
   final Duration _animationDuration = const Duration(milliseconds: 200);
   late final AnimationController _animationController;
 
@@ -59,6 +63,8 @@ class _VideoPostState extends State<VideoPost>
     super.initState();
     _initVideoPlayer();
 
+    _isMuted = context.read<PlaybackConfigViewModel>().muted;
+
     _animationController = AnimationController(
       vsync: this,
       lowerBound: 1.0,
@@ -66,6 +72,10 @@ class _VideoPostState extends State<VideoPost>
       value: 1.5,
       duration: _animationDuration,
     );
+
+    context
+        .read<PlaybackConfigViewModel>()
+        .addListener(_onPlaybackConfigChanged);
   }
 
   @override
@@ -74,12 +84,30 @@ class _VideoPostState extends State<VideoPost>
     super.dispose();
   }
 
+  void _onPlaybackConfigChanged() {
+    // print("1: ${context.read<PlaybackConfigViewModel>().muted}");
+    // print("2: $_isMuted");
+    if (!mounted) return;
+    //final muted = context.read<PlaybackConfigViewModel>().muted;
+    if (_isMuted) {
+      _videoPlayerController.setVolume(0);
+      _isMuted = !_isMuted;
+    } else {
+      _videoPlayerController.setVolume(1);
+      _isMuted = !_isMuted;
+    }
+    setState(() {});
+  }
+
   void _onVisibilityChanged(VisibilityInfo info) {
     if (!mounted) return;
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      _videoPlayerController.play();
+      final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
+      if (autoplay) {
+        _videoPlayerController.play();
+      }
     }
     if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
       _onTogglePause();
@@ -120,14 +148,14 @@ class _VideoPostState extends State<VideoPost>
     _onTogglePause();
   }
 
-  void _onVolumButton() async {
+  /* void _onVolumButton() async {
     if (_videoPlayerController.value.volume != 0) {
       await _videoPlayerController.setVolume(0);
     } else {
       _videoPlayerController.setVolume(0.3);
     }
     setState(() {});
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +163,8 @@ class _VideoPostState extends State<VideoPost>
       key: Key("${widget.index}"),
       onVisibilityChanged: (info) {
         _onVisibilityChanged(info);
-        print(
-            "Video: #${widget.index} is ${info.visibleFraction * 100}%visible");
+        //print(
+        //  "Video: #${widget.index} is ${info.visibleFraction * 100}%visible");
       },
       child: Stack(
         children: [
@@ -227,19 +255,16 @@ class _VideoPostState extends State<VideoPost>
             ),
           ),
           Positioned(
-            right: 10,
-            top: 10,
+            left: 20,
+            top: 50,
             child: IconButton(
-              onPressed: _onVolumButton,
-              icon: _videoPlayerController.value.volume == 0
-                  ? const FaIcon(
-                      FontAwesomeIcons.volumeXmark,
-                      color: Colors.white,
-                    )
-                  : const FaIcon(
-                      FontAwesomeIcons.volumeHigh,
-                      color: Colors.white,
-                    ),
+              onPressed: _onPlaybackConfigChanged,
+              icon: FaIcon(
+                _isMuted
+                    ? FontAwesomeIcons.volumeXmark
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+              ),
             ),
           ),
           Positioned(
