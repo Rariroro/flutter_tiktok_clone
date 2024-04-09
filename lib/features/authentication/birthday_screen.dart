@@ -1,27 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
+import 'package:flutter_tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/form_button.dart';
 import 'package:flutter_tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:go_router/go_router.dart';
 
-class BirthdayScreen extends StatefulWidget {
+class BirthdayScreen extends ConsumerStatefulWidget {
   const BirthdayScreen({super.key});
 
   @override
-  State<BirthdayScreen> createState() => _BirthdayScreenState();
+  BirthdayScreenState createState() => BirthdayScreenState();
 }
 
-class _BirthdayScreenState extends State<BirthdayScreen> {
+class BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   final TextEditingController _birthdayController = TextEditingController();
 
+  String _birthday = "";
   DateTime initialDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _setTextFieldDate(initialDate);
+
+    _birthdayController.addListener(() {
+      setState(() {
+        _birthday = _birthdayController.text;
+      });
+    });
   }
 
   @override
@@ -32,7 +41,11 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   }
 
   void _onNextTap() {
-    context.goNamed(InterestsScreen.routeName);
+    // print(ref.read(signUpForm));
+    final state = ref.read(signUpForm.notifier).state;
+    ref.read(signUpForm.notifier).state = {...state, "birthday": _birthday};
+    ref.read(signUpProvider.notifier).signUp(context);
+    print(ref.read(signUpForm));
   }
 
   void _setTextFieldDate(DateTime date) {
@@ -96,7 +109,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
             Gaps.v28,
             GestureDetector(
               onTap: _onNextTap,
-              child: const FormButton(disabled: false),
+              child: FormButton(
+                disabled: ref.watch(signUpProvider).isLoading,
+              ),
             ),
           ],
         ),
