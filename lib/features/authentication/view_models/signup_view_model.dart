@@ -32,14 +32,15 @@ class SignUpViewModel extends AsyncNotifier<void> {
           form["password"],
         );
 
-        // await userCredential.user!.updateDisplayName(form["username"]);
+        //  await userCredential.user!.updateDisplayName("dsfdfd");
 
         //3.firebaseauth에서 받은 유저정보를 유저프로필(firestore)에 저장
         await users.createProfile(userCredential);
 
-        //   print(userCredential.user);
+        // print(userCredential.user);
       },
     );
+
     if (state.hasError) {
       showFirebaseErrorSnack(context, state.error);
     } else {
