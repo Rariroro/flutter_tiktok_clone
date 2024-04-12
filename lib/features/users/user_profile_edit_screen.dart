@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/features/authentication/view_models/signup_view_model.dart';
-import 'package:flutter_tiktok_clone/features/users/user_profile_screen.dart';
 import 'package:flutter_tiktok_clone/features/users/view_models/users_view_model.dart';
 
 class UserProfileEditScreen extends ConsumerStatefulWidget {

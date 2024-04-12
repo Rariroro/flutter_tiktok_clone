@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/features/videos/view_models/%08timeline_view_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -27,6 +28,11 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
 
   bool _saveVideo = false;
 
+  String _title = '';
+  String _description = '';
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
   Future<void> _initVideo() async {
     _videoPlayerController = VideoPlayerController.file(
       File(widget.video.path),
@@ -46,6 +52,12 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     _initVideo();
   }
 
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
   Future<void> _saveToGallery() async {
     if (_saveVideo) return;
 
@@ -55,14 +67,51 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     setState(() {});
   }
 
-  @override
-  void dispose() {
-    _videoPlayerController.dispose();
-    super.dispose();
-  }
-
   void _onUploadPressed() {
     ref.read(timelineProvider.notifier).uploadVideo();
+  }
+
+  void _showUploadSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => AnimatedPadding(
+        padding: MediaQuery.of(context).viewInsets,
+        duration: const Duration(milliseconds: 1),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Wrap(
+            children: [
+              TextField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              Gaps.v10,
+              TextField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+              Gaps.v20,
+              ElevatedButton(
+                onPressed: () {
+                  _title = _titleController.text;
+                  _description = _descriptionController.text;
+                  Navigator.pop(context);
+                  _onUploadPressed();
+                },
+                child: const Text('Upload Video'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -81,8 +130,8 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
             ),
           IconButton(
               onPressed: ref.watch(timelineProvider).isLoading
-                  ? () {}
-                  : _onUploadPressed,
+                  ? null
+                  : _showUploadSheet,
               icon: ref.watch(timelineProvider).isLoading
                   ? const CircularProgressIndicator()
                   : const FaIcon(FontAwesomeIcons.cloudArrowUp))
