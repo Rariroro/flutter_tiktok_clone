@@ -14,7 +14,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   final PageController _pageController = PageController();
   final Duration _scrollDuration = const Duration(milliseconds: 250);
   final Curve _scrollCurve = Curves.linear;
-  int _itemCount = 4;
+  int _itemCount = 0;
 
   void _onPageChanged(int page) {
     _pageController.animateToPage(
@@ -23,9 +23,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
       curve: _scrollCurve,
     );
     if (page == _itemCount - 1) {
-      _itemCount = _itemCount + 4;
-
-      setState(() {});
+      ref.watch(timelineProvider.notifier).fetchNextPage();
     }
   }
 
@@ -42,31 +40,40 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
     _pageController.dispose();
     super.dispose();
   }
- 
+
   Future<void> _onRefresh() {
-    return Future.delayed(
-      const Duration(seconds: 5),
-    );
+    return ref
+        .watch(timelineProvider.notifier)
+        .refresh(); //리턴해야 하는 이유:RefreshIndicator위젯의 onRefresh속  성 확인
   }
 
   @override
   Widget build(BuildContext context) {
     return ref.watch(timelineProvider).when(
-          //riverpod로 api(future형식)에서 값을 가져올때 view형식
-          data: (videos) => RefreshIndicator(
-            //value를 videos로 바꾸었다. 바꿀수있다.
-            onRefresh: _onRefresh,
-            displacement: 50,
-            edgeOffset: 20,
-            child: PageView.builder(
-              controller: _pageController,
-              scrollDirection: Axis.vertical,
-              onPageChanged: _onPageChanged,
-              itemCount: videos.length,
-              itemBuilder: (context, index) =>
-                  VideoPost(onVideoFinished: _onVideoFinished, index: index),
-            ),
-          ),
+          //riverpod로 api(future형식)에서 값을 가져올때 view형식.timelineProvider에서 state가 바뀌면 리빌드
+          data: (videos) {
+            //value를 videos로 바꾸었다. 바꿀수있다.그리고 이 데이터는 timelineProvider에서 리턴하는 겂을 받는다. 정확히는 build의 리턴값
+            _itemCount = videos.length;
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              displacement: 50,
+              edgeOffset: 20,
+              child: PageView.builder(
+                controller: _pageController,
+                scrollDirection: Axis.vertical,
+                onPageChanged: _onPageChanged,
+                itemCount: videos.length,
+                itemBuilder: (context, index) {
+                  final videoData = videos[index];
+                  return VideoPost(
+                    onVideoFinished: _onVideoFinished,
+                    index: index,
+                    videoData: videoData,
+                  );
+                },
+              ),
+            );
+          },
           error: (error, stackTrace) => Center(
             child: Text(
               'Could not load videos : $error',

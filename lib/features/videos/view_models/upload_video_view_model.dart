@@ -29,6 +29,7 @@ class UploadVideoViewModel extends AsyncNotifier<void> {
           if (task.metadata != null) {
             await _repository.saveVideo(
               VideoModel(
+                  id: "", //영상 업로드시에는 없고, id는 저절로 생상되기 때문데.
                   title: ref.read(videoForm)["title"] ?? '',
                   description: ref.read(videoForm)["description"] ?? '',
                   fileUrl: await task.ref.getDownloadURL(),
@@ -39,7 +40,8 @@ class UploadVideoViewModel extends AsyncNotifier<void> {
                   comments: 0,
                   createdAt: DateTime.now().millisecondsSinceEpoch),
             );
-            context.pushReplacement("/home");
+            context.pop();
+            context.pop();
           }
         },
       );

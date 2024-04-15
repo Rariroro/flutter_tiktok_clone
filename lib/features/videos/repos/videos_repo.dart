@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +18,38 @@ class VideosRepository {
 
   Future<void> saveVideo(VideoModel data) async {
     await _db.collection("videos").add(data.toJson());
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchVideo(
+      {int? lastItemCreatedAt}) {
+    //아래 코드는 영상을 가져올때 좋아요가 10개 위의 영상을 가져오는 코드. 이렇게도 할수있다.
+    //return _db.collection("videos").where("likes",isGreaterThan: 10).get();
+
+    final query = _db
+        .collection("videos")
+        .orderBy("createdAt", descending: true)
+        .limit(2);
+
+    if (lastItemCreatedAt == null) {
+      return query.get();
+    } else {
+      return query.startAfter([lastItemCreatedAt]).get();
+    }
+  }
+
+  Future<void> likeVideo(String videoId, String userId) async {
+    final query = _db
+        .collection("likes")
+        .doc("${videoId}000$userId"); //자동아이디 아닌 userId와videoId결합해서 like아이디 만듬.
+    final like = await query.get();
+    if (!like.exists) {
+      //동일한 아이디의 like가 있으면 만들지 않음.좋아요를 동일한 사람이 두번이상 못하게 하기 위한 방법
+      await query.set({
+        "createdAt": DateTime.now().millisecondsSinceEpoch,
+      });
+    } else {
+      await query.delete();
+    }
   }
 }
 
