@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/common/widget/main_navigation_screen.dart';
 import 'package:go_router/go_router.dart';
 
 enum Direction { right, left }

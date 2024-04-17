@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,8 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   bool _isPaused = false;
   late bool _isMuted;
+  bool _isLiked = false;
+  late int _likeCount;
 
   final Duration _animationDuration = const Duration(milliseconds: 200);
   late final AnimationController _animationController;
@@ -48,9 +51,18 @@ class VideoPostState extends ConsumerState<VideoPost>
     }
   }
 
-  void _onLikeTap() {
-    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
-    print(widget.videoData.id);
+  void _onLikeTap() async {
+    await ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
+
+    if (_isLiked) {
+      _isLiked = !_isLiked;
+      _likeCount -= 1;
+    } else {
+      _isLiked = !_isLiked;
+      _likeCount += 1;
+    }
+
+    setState(() {});
   }
 
   void _initVideoPlayer() async {
@@ -77,6 +89,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     _initVideoPlayer();
 
     _isMuted = ref.read(playbackConfigProvider).muted;
+    _likeCount = widget.videoData.likes;
 
     _animationController = AnimationController(
       vsync: this,
@@ -172,6 +185,8 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   @override
   Widget build(BuildContext context) {
+    _isLiked = ref.read(videoPostProvider(widget.videoData.id).notifier).liked;
+
     return VisibilityDetector(
       key: Key("${widget.index}"),
       onVisibilityChanged: (info) {
@@ -303,7 +318,8 @@ class VideoPostState extends ConsumerState<VideoPost>
                   onTap: _onLikeTap,
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidHeart,
-                    text: widget.videoData.likes.toString(),
+                    text: _likeCount.toString(),
+                    iconColor: _isLiked ? Colors.red : null,
                   ),
                 ),
                 Gaps.v24,

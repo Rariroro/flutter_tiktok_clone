@@ -6,8 +6,6 @@ import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/authentication/view_models/login_view_model.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/form_button.dart';
-import 'package:flutter_tiktok_clone/features/onboarding/interests_screen.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginFormScreen extends ConsumerStatefulWidget {
   const LoginFormScreen({super.key});

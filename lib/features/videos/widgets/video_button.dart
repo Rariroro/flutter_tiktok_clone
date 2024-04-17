@@ -8,10 +8,12 @@ class VideoButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.text,
+    this.iconColor,
   });
 
   final IconData icon;
   final String text;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class VideoButton extends StatelessWidget {
       children: [
         FaIcon(
           icon,
-          color: Colors.white,
+          color: iconColor ?? Colors.white,
           size: Sizes.size40,
         ),
         Gaps.v5,

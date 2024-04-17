@@ -1,14 +1,15 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/videos/models/video_model.dart';
 
 class VideosRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  late bool _isLiked;
 
   UploadTask uploadVideoFile(File video, String uid) {
     final fileRef = _storage.ref().child(
@@ -37,19 +38,33 @@ class VideosRepository {
     }
   }
 
-  Future<void> likeVideo(String videoId, String userId) async {
+  Future<bool> likeVideo(String videoId, String userId) async {
     final query = _db
         .collection("likes")
         .doc("${videoId}000$userId"); //자동아이디 아닌 userId와videoId결합해서 like아이디 만듬.
     final like = await query.get();
+
     if (!like.exists) {
       //동일한 아이디의 like가 있으면 만들지 않음.좋아요를 동일한 사람이 두번이상 못하게 하기 위한 방법
       await query.set({
         "createdAt": DateTime.now().millisecondsSinceEpoch,
       });
+      _isLiked = true;
+      return _isLiked;
     } else {
       await query.delete();
+      _isLiked = false;
+      return _isLiked;
     }
+  }
+
+  Future<bool> initLike(String videoId, String userId) async {
+    final query = _db
+        .collection("likes")
+        .doc("${videoId}000$userId"); //자동아이디 아닌 userId와videoId결합해서 like아이디 만듬.
+    final like = await query.get();
+
+    return like.exists;
   }
 }
 
