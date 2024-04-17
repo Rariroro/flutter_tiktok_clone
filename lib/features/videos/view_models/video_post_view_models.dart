@@ -7,21 +7,20 @@ import 'package:flutter_tiktok_clone/features/videos/repos/videos_repo.dart';
 class VideoPostViewModel extends FamilyAsyncNotifier<void, String> {
   //FamilyAsyncNotifier는 프로바이더 read할때 프로퍼티를 받아 build에서 초기화때 적용
   late final VideosRepository _repository;
-  late final _videoId;
-  late bool liked = false;
+  late final String _videoId;
+  late bool isliked = false;
 
   @override
   FutureOr<void> build(String videoId) async {
     _videoId = videoId;
     _repository = ref.read(videosRepo);
-    liked = await initLike();
-    //liked = _repository.isLiked;
+    isliked = await initLike();
   }
 
   Future<bool> likeVideo() async {
     final user = ref.read(authRepo).user;
-    liked = await _repository.likeVideo(_videoId, user!.uid);
-    return liked;
+    isliked = await _repository.likeVideo(_videoId, user!.uid);
+    return isliked;
   }
 
   Future<bool> initLike() async {

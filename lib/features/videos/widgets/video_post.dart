@@ -88,6 +88,8 @@ class VideoPostState extends ConsumerState<VideoPost>
     super.initState();
     _initVideoPlayer();
 
+    _isLiked =
+        ref.read(videoPostProvider(widget.videoData.id).notifier).isliked;
     _isMuted = ref.read(playbackConfigProvider).muted;
     _likeCount = widget.videoData.likes;
 
@@ -185,7 +187,8 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   @override
   Widget build(BuildContext context) {
-    _isLiked = ref.read(videoPostProvider(widget.videoData.id).notifier).liked;
+    _isLiked =
+        ref.read(videoPostProvider(widget.videoData.id).notifier).isliked;
 
     return VisibilityDetector(
       key: Key("${widget.index}"),
