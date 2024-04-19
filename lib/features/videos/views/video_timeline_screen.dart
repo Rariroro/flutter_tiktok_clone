@@ -44,7 +44,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   Future<void> _onRefresh() {
     return ref
         .watch(timelineProvider.notifier)
-        .refresh(); //리턴해야 하는 이유:RefreshIndicator위젯의 onRefresh속  성 확인
+        .refresh(); //리턴해야 하는 이유:RefreshIndicator위젯의 onRefresh속성 확인
   }
 
   @override

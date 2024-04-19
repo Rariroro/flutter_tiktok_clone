@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/videos/models/video_model.dart';
 
 class VideosRepository {
@@ -58,7 +57,7 @@ class VideosRepository {
     }
   }
 
-  Future<bool> initLike(String videoId, String userId) async {
+  Future<bool> isLike(String videoId, String userId) async {
     final query = _db
         .collection("likes")
         .doc("${videoId}000$userId"); //자동아이디 아닌 userId와videoId결합해서 like아이디 만듬.
