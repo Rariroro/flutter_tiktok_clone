@@ -26,7 +26,7 @@ class UserProfileModel {
         birthday = "",
         hasAvatar = false;
 
-  UserProfileModel.fromJson(Map<String, dynamic> json)
+  UserProfileModel.fromJson({required Map<String, dynamic> json})
       : uid = json["uid"],
         email = json["email"],
         name = json["name"],

@@ -74,3 +74,28 @@ export const onLikedRemoed = functions.firestore
       .doc(videoId)
       .delete();
   });
+
+
+  export const onChatCreated = functions.firestore
+  .document("chat_rooms/{chatId}")
+  .onCreate(async (snapshot, context) => {
+    const db = admin.firestore();
+    
+    const personA = (await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personA;
+    const personB=(await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personB;
+    
+    await db.collection("chat_rooms").doc(snapshot.id).set({id:snapshot.id,},{merge:true});
+
+    await db
+      .collection("users")
+      .doc(personA)
+      .collection("chat_rooms")
+      .doc(snapshot.id)
+      .set({personA:personA as String, personB: personB,chatId:snapshot.id });
+      await db
+      .collection("users")
+      .doc(personB)
+      .collection("chat_rooms")
+      .doc(snapshot.id)
+      .set({personA:personA as String, personB: personB ,chatId:snapshot.id});
+  });

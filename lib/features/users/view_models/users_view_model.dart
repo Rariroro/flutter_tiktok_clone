@@ -21,7 +21,7 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
           .findProfile(_authenticationRepository.user!.uid);
 
       if (profile != null) {
-        return UserProfileModel.fromJson(profile);
+        return UserProfileModel.fromJson(json: profile);
       }
     }
 

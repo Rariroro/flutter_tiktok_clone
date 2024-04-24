@@ -12,10 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  ); //firebase초기화
-
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    ); //firebase초기화
+  }
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   final prefrences = await SharedPreferences.getInstance();

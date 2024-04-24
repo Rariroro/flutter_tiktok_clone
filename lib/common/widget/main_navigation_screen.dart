@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tiktok_clone/constants/gaps.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/discover/discover_screen.dart';
-import 'package:flutter_tiktok_clone/features/inbox/inbox_screen.dart';
+import 'package:flutter_tiktok_clone/features/inbox/views/inbox_screen.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/nav_tab.dart';
 import 'package:flutter_tiktok_clone/features/main_navigation/widgets/post_video_button.dart';
 import 'package:flutter_tiktok_clone/features/users/views/user_profile_screen.dart';

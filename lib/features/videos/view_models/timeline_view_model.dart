@@ -8,6 +8,14 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   late final VideosRepository _repository;
   List<VideoModel> _list = [];
 
+  @override
+  FutureOr<List<VideoModel>> build() async {
+    _repository = ref.read(videosRepo);
+    _list =
+        await _fetchVideos(lastItemCreatedAt: null); //첫번째 페이지를 불러오기 떄문에 null
+    return _list;
+  }
+
   Future<List<VideoModel>> _fetchVideos({int? lastItemCreatedAt}) async {
     final result =
         await _repository.fetchVideo(lastItemCreatedAt: lastItemCreatedAt);
@@ -15,14 +23,6 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
       (doc) => VideoModel.fromJson(json: doc.data(), videoId: doc.id),
     ); //map의 방삭을 알야야. 받은 result의 값들을 하나씩 => 이후의 코드를 적용해서 값을 바꿈.}
     return videos.toList();
-  }
-
-  @override
-  FutureOr<List<VideoModel>> build() async {
-    _repository = ref.read(videosRepo);
-    _list =
-        await _fetchVideos(lastItemCreatedAt: null); //첫번째 페이지를 불러오기 떄문에 null
-    return _list;
   }
 
   Future<void> fetchNextPage() async {
