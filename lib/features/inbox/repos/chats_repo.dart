@@ -7,11 +7,11 @@ class ChatsRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   //final List<UserProfileModel> _userList = [];
 
-  Future<QuerySnapshot<Map<String, dynamic>>> loadChats(String userId) async {
+  Future<QuerySnapshot<Map<String, dynamic>>> loadChats(
+      String currentUserId) async {
     return await _db
-        .collection("users")
-        .doc(userId)
         .collection("chat_rooms")
+        .where('participants', arrayContains: currentUserId)
         .get();
   }
 
@@ -21,27 +21,29 @@ class ChatsRepository {
 
   Future<void> deleteChat() async {}
 
-  Future<List<String>> getActiveChatPartners(String userId) async {
-    var chatRooms = await _db
+  Future<List<dynamic>> getActiveChatPartners(String userId) async {
+    //이함수는 추후에 firebase까지 안가고 _chatList에서
+    var activeChatPartners = await _db
         .collection('chat_rooms')
-        .where('personA', isEqualTo: userId)
+        .where('participants',
+            arrayContains: userId) // 참여자 배열에 사용자 ID가 포함되어 있는 문서 찾기
         .get()
         .then((snapshot) => snapshot.docs)
-        .then((docs) => docs.map((doc) => doc['personB'] as String).toList());
+        .then((docs) => docs
+            .map((doc) {
+              var otherParticipants = List<dynamic>.from(doc['participants']);
+              otherParticipants.remove(userId); // 현재 사용자를 제외한 다른 참여자들만 반환
+              return otherParticipants;
+            })
+            .expand((element) => element)
+            .toList()); // 모든 참여자 목록을 하나의 리스트로 펼침
 
-    var chatRooms2 = await _db
-        .collection('chat_rooms')
-        .where('personB', isEqualTo: userId)
-        .get()
-        .then((snapshot) => snapshot.docs)
-        .then((docs) => docs.map((doc) => doc['personA'] as String).toList());
-
-    return [...chatRooms, ...chatRooms2];
+    return activeChatPartners;
   }
 
   Future<List<UserProfileModel>> getAvailableChatCandidates(
       String currentUserId) async {
-    List<String> activeChatPartners =
+    List<dynamic> activeChatPartners =
         await getActiveChatPartners(currentUserId);
 
     final allUserDocs = await _db

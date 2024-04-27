@@ -10,6 +10,18 @@ class MessagesRepo {
           message.toJson(),
         );
   }
+
+  Future<void> deleteMessage(String chatId, int createdAt) async {
+    var querySnapshot = await _db
+        .collection("chat_rooms")
+        .doc(chatId)
+        .collection("texts")
+        .where("createdAt", isEqualTo: createdAt)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      await querySnapshot.docs.first.reference.delete();
+    }
+  }
 }
 
 final messagesRepo = Provider(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
   FutureOr<void> build(String chatId) {
     _repo = ref.read(messagesRepo);
     _chatId = chatId;
+
     // _chatRoomId=ref.read(chatRoomProvider).
   }
 
@@ -28,6 +30,10 @@ class MessagesViewModel extends FamilyAsyncNotifier<void, String> {
       );
       _repo.sendMessage(message, _chatId);
     });
+  }
+
+  Future<void> deleteMessage(int createdAt) async {
+    await _repo.deleteMessage(_chatId, createdAt);
   }
 }
 

@@ -5,7 +5,8 @@ import 'package:flutter_tiktok_clone/features/authentication/repos/authenticatio
 import 'package:flutter_tiktok_clone/features/inbox/repos/chats_repo.dart';
 import 'package:flutter_tiktok_clone/features/users/models/user_profile_model.dart';
 
-class AvailableUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
+class AvailableUsersViewModel
+    extends AutoDisposeAsyncNotifier<List<UserProfileModel>> {
   // late final UserRepository _userRepository;
   late final ChatsRepository _chatsRepository;
   late final AuthenticationRepository _authenticationRepository;
@@ -39,7 +40,7 @@ class AvailableUsersViewModel extends AsyncNotifier<List<UserProfileModel>> {
   // }
 }
 
-final availableUsersProvider =
-    AsyncNotifierProvider<AvailableUsersViewModel, List<UserProfileModel>>(
+final availableUsersProvider = AsyncNotifierProvider.autoDispose<
+    AvailableUsersViewModel, List<UserProfileModel>>(
   () => AvailableUsersViewModel(),
 );

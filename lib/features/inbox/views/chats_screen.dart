@@ -5,6 +5,7 @@ import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/inbox/models/chat_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/available_users_view_model.dart';
+import 'package:flutter_tiktok_clone/features/inbox/view_models/chat_otheruser_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/chats_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:flutter_tiktok_clone/features/inbox/views/chat_user_choice_screen.dart';
@@ -37,17 +38,12 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     }
   }
 
-  Future<void> _onChatUserChoiceButton() async {
+  void _onChatUserChoiceButton() {
     //future은 지워야함!!!
 
-    final users = await ref
-        .read(availableUsersProvider.notifier)
-        .getActiveChatPartners(ref.read(authRepo).user!.uid);
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChatUserChoiceScreen(
-          userList: users,
-        ),
+        builder: (context) => const ChatUserChoiceScreen(),
       ),
     );
     // print(users[0].uid);
@@ -81,39 +77,44 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   }
 
   Widget _makeTile(List<ChatModel> chats, int index) {
-    final otherPersonId =
-        ref.read(chatRoomProvider.notifier).returnChatInfo(chats[index].id);
-    return ListTile(
-      onLongPress: () => _deleteItem(chats, index),
-      onTap: () => _onChatTap(
-        chats[index].id,
-      ),
-      leading: CircleAvatar(
-        radius: 30,
-        foregroundImage: NetworkImage(
-          "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-eunga0110.appspot.com/o/avatars%2F$otherPersonId?alt=media&haha=${DateTime.now().toString()}",
-        ),
-        child: Text(chats[index].personB),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            chats[index].id,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          Text(
-            "2:16 PM",
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: Sizes.size12,
+    //print("maketile");
+    return ref.watch(chatOtheruserProvider(chats[index].id)).when(
+        data: (otherUser) => ListTile(
+              onLongPress: () => _deleteItem(chats, index),
+              onTap: () => _onChatTap(
+                chats[index].id,
+              ),
+              leading: CircleAvatar(
+                radius: 30,
+                foregroundImage: NetworkImage(
+                  "https://firebasestorage.googleapis.com/v0/b/tiktok-clone-eunga0110.appspot.com/o/avatars%2F${otherUser.uid}?alt=media&haha=${DateTime.now().toString()}",
+                ),
+                child: Text(otherUser.name),
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    otherUser.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    "2:16 PM",
+                    style: TextStyle(
+                      color: Colors.grey.shade500,
+                      fontSize: Sizes.size12,
+                    ),
+                  ),
+                ],
+              ),
+              subtitle: const Text("Don't forget to make video"),
             ),
-          ),
-        ],
-      ),
-      subtitle: const Text("Don't forget to make video"),
-    );
+        error: (error, stackTrace) => Center(
+              child: Text(error.toString()),
+            ),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()));
   }
 
   @override

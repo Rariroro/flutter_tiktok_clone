@@ -22,6 +22,8 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
     final videos = result.docs.map(
       (doc) => VideoModel.fromJson(json: doc.data(), videoId: doc.id),
     ); //map의 방삭을 알야야. 받은 result의 값들을 하나씩 => 이후의 코드를 적용해서 값을 바꿈.}
+    // final list = videos.toList();
+    //print("video${list[0].id}");
     return videos.toList();
   }
 

@@ -21,7 +21,7 @@ class SignUpViewModel extends AsyncNotifier<void> {
     state = const AsyncValue.loading();
     final form = ref.read(signUpForm);
 
-    //1.uservm을 받아놓기
+    //1.uservm 리스너를 받아놓기
     final users = ref.read(usersProvider.notifier);
     //print(form["username"]);
     state = await AsyncValue.guard(

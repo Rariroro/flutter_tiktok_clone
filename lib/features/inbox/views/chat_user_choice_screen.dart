@@ -1,16 +1,15 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tiktok_clone/constants/sizes.dart';
+import 'package:flutter_tiktok_clone/features/inbox/view_models/available_users_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/widgets/user_tile.dart';
 import 'package:flutter_tiktok_clone/features/users/models/user_profile_model.dart';
 
 class ChatUserChoiceScreen extends ConsumerStatefulWidget {
-  final List<UserProfileModel> userList;
+  // final List<UserProfileModel> otherUserList;
 
   const ChatUserChoiceScreen({
     super.key,
-    required this.userList,
+    // required this.otherUserList,
   });
 
   @override
@@ -23,24 +22,25 @@ class _ChatUserChoiceScreenState extends ConsumerState<ChatUserChoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0.3,
-          surfaceTintColor: Colors.white,
-          shadowColor: Colors.grey,
-          title: const Text(
-            "Users",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: ListView.builder(
-          itemCount: widget.userList.length,
-          itemBuilder: (context, index) {
-            return UserTile(userData: widget.userList[index]);
-          },
-        )
+    return ref.watch(availableUsersProvider).when(
+        data: (otherUsers) => Scaffold(
+            appBar: AppBar(
+              elevation: 0.3,
+              surfaceTintColor: Colors.white,
+              shadowColor: Colors.grey,
+              title: const Text(
+                "Users",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            body: ListView.builder(
+              itemCount: otherUsers.length,
+              itemBuilder: (context, index) {
+                return UserTile(otherUserData: otherUsers[index]);
+              },
+            )
 
-        /*AnimatedList(
+            /*AnimatedList(
         key: _key,
         padding: const EdgeInsets.symmetric(
           vertical: Sizes.size10,
@@ -54,6 +54,11 @@ class _ChatUserChoiceScreenState extends ConsumerState<ChatUserChoiceScreen> {
           );
         },
       ),*/
-        );
+            ),
+        error: (error, stackTrace) => Center(
+              child: Text(error.toString()),
+            ),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()));
   }
 }
