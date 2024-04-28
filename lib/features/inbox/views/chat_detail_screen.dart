@@ -5,8 +5,6 @@ import 'package:flutter_tiktok_clone/constants/sizes.dart';
 import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/chat_otheruser_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/messages_view_model.dart';
-import 'package:flutter_tiktok_clone/features/inbox/views/chats_screen.dart';
-import 'package:flutter_tiktok_clone/features/users/models/user_profile_model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
@@ -29,7 +27,6 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _editingController = TextEditingController();
   bool isDeleteMessage = false;
-  int? _selectedMessage; //선택된 메시지 ID를 저장
   //late final UserProfileModel otherUser;
 
   void _onSendPress() {
@@ -42,16 +39,26 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   Future<void> _showMessageMenu(BuildContext context, int createdAt) async {
+    final int currentTime = DateTime.now().millisecondsSinceEpoch;
+    final int timeDifference = currentTime - createdAt;
+    const int timeLimit = 120000;
+
     final result = await showModalBottomSheet(
       context: context,
       builder: (context) {
         return Wrap(
           children: [
-            ListTile(
-              leading: const Icon(FontAwesomeIcons.deleteLeft),
-              title: const Text("Delete Message"),
-              onTap: () => Navigator.pop(context, 'delete'),
-            ),
+            if (timeDifference < timeLimit)
+              ListTile(
+                leading: const Icon(FontAwesomeIcons.deleteLeft),
+                title: const Text("Delete Message"),
+                onTap: () => Navigator.pop(context, 'delete'),
+              )
+            else
+              const ListTile(
+                leading: Icon(FontAwesomeIcons.info),
+                title: Text("2분이 지나 삭제할 수 없습니다"),
+              )
           ],
         );
       },
@@ -64,7 +71,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   Future<void> _deleteMessage(int createdAt) async {
     setState(() {
       isDeleteMessage = true;
-      _selectedMessage = createdAt;
       print("Deleting message with ID: $createdAt");
       //메세지 삭제로직 추가
       ref
