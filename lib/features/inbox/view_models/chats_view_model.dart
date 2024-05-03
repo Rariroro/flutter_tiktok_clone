@@ -47,8 +47,8 @@ class ChatsViewModel extends AsyncNotifier<List<ChatModel>> {
     state = await AsyncValue.guard<List<ChatModel>>(
       () async {
         await _repository.createdChat(ChatModel(participants: [
-          user.uid ?? '',
-          otherUser.uid ?? '',
+          user.uid,
+          otherUser.uid,
         ], id: ""));
         print("k");
         _chatList = await _loadChats();

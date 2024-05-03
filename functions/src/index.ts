@@ -43,9 +43,11 @@ export const onLikedCreated = functions.firestore
   .document("likes/{likedId}")
   .onCreate(async (snapshot, context) => {
     const db = admin.firestore();
-    
+
     const [videoId, userId] = snapshot.id.split("000");
-    const thumbnailUrl=(await db.collection("videos").doc(videoId).get()).data()!.thumbnailUrl;
+    const thumbnailUrl = (
+      await db.collection("videos").doc(videoId).get()
+    ).data()!.thumbnailUrl;
     await db
       .collection("videos")
       .doc(videoId)
@@ -55,7 +57,26 @@ export const onLikedCreated = functions.firestore
       .doc(userId)
       .collection("likes")
       .doc(videoId)
-      .set({thumbnailUrl:thumbnailUrl as String, videoId: videoId });
+      .set({ thumbnailUrl: thumbnailUrl as String, videoId: videoId });
+
+    const video = (await db.collection("videos").doc(videoId).get()).data();
+    if (video) {
+      const creatorUid = video.creatorUid;
+      const user = await (
+        await db.collection("users").doc(creatorUid).get()
+      ).data();
+      if (user) {
+        const token = user.token;
+        await admin.messaging().send({
+          token,
+          data: { screen: "123" },
+          notification: {
+            title: "someone liked your video.",
+            body: "Likes + 1! Congrats!",
+          },
+        });
+      }
+    }
   });
 
 export const onLikedRemoed = functions.firestore
@@ -67,7 +88,7 @@ export const onLikedRemoed = functions.firestore
       .collection("videos")
       .doc(videoId)
       .update({ likes: admin.firestore.FieldValue.increment(-1) });
-      await db
+    await db
       .collection("users")
       .doc(userId)
       .collection("likes")
@@ -75,27 +96,26 @@ export const onLikedRemoed = functions.firestore
       .delete();
   });
 
+// export const onChatCreated = functions.firestore
+// .document("chat_rooms/{chatId}")
+// .onCreate(async (snapshot, context) => {
+//   const db = admin.firestore();
 
-  // export const onChatCreated = functions.firestore
-  // .document("chat_rooms/{chatId}")
-  // .onCreate(async (snapshot, context) => {
-  //   const db = admin.firestore();
-    
-  //   const personA = (await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personA;
-  //   const personB=(await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personB;
-    
-  //   await db.collection("chat_rooms").doc(snapshot.id).set({id:snapshot.id,},{merge:true});
+//   const personA = (await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personA;
+//   const personB=(await db.collection("chat_rooms").doc(snapshot.id).get()).data()!.personB;
 
-  //   await db
-  //     .collection("users")
-  //     .doc(personA)
-  //     .collection("chat_rooms")
-  //     .doc(snapshot.id)
-  //     .set({personA:personA as String, personB: personB,chatId:snapshot.id });
-  //     await db
-  //     .collection("users")
-  //     .doc(personB)
-  //     .collection("chat_rooms")
-  //     .doc(snapshot.id)
-  //     .set({personA:personA as String, personB: personB ,chatId:snapshot.id});
-  // });
+//   await db.collection("chat_rooms").doc(snapshot.id).set({id:snapshot.id,},{merge:true});
+
+//   await db
+//     .collection("users")
+//     .doc(personA)
+//     .collection("chat_rooms")
+//     .doc(snapshot.id)
+//     .set({personA:personA as String, personB: personB,chatId:snapshot.id });
+//     await db
+//     .collection("users")
+//     .doc(personB)
+//     .collection("chat_rooms")
+//     .doc(snapshot.id)
+//     .set({personA:personA as String, personB: personB ,chatId:snapshot.id});
+// });

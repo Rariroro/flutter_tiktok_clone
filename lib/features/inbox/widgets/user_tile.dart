@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/inbox/models/chat_model.dart';
-import 'package:flutter_tiktok_clone/features/inbox/view_models/available_users_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/chats_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:flutter_tiktok_clone/features/users/models/user_profile_model.dart';
@@ -21,8 +20,6 @@ class UserTile extends ConsumerStatefulWidget {
 }
 
 class _UserTileState extends ConsumerState<UserTile> {
-  final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
-
   void _deleteItem() {}
 
   void _onChatTap() {}

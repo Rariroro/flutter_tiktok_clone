@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/constants/sizes.dart';
-import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/inbox/models/chat_model.dart';
-import 'package:flutter_tiktok_clone/features/inbox/view_models/available_users_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/chat_otheruser_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/chats_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/views/chat_detail_screen.dart';

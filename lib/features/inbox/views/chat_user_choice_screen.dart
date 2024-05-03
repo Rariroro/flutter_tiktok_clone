@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/features/inbox/view_models/available_users_view_model.dart';
 import 'package:flutter_tiktok_clone/features/inbox/widgets/user_tile.dart';
-import 'package:flutter_tiktok_clone/features/users/models/user_profile_model.dart';
 
 class ChatUserChoiceScreen extends ConsumerStatefulWidget {
   // final List<UserProfileModel> otherUserList;
@@ -18,7 +17,7 @@ class ChatUserChoiceScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatUserChoiceScreenState extends ConsumerState<ChatUserChoiceScreen> {
-  final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
+  // final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
 
   @override
   Widget build(BuildContext context) {

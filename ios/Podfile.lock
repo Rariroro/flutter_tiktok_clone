@@ -1132,7 +1132,7 @@ SPEC CHECKSUMS:
   FirebaseMessagingInterop: 85b013ab9a66b8fc8b64dcdc11ff05cc49c6be0c
   FirebaseSharedSwift: c92645b392db3c41a83a0aa967de16f8bad25568
   FirebaseStorage: bc7bddc743548a89cfb896843a77cf4bdde2c231
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   gallery_saver: 9fc173c9f4fcc48af53b2a9ebea1b643255be542
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   "gRPC-C++": 12f33a422dcab88dcd0c53e52cd549a929f0f244
@@ -1149,6 +1149,6 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   video_player_avfoundation: 02011213dab73ae3687df27ce441fbbcc82b5579
 
-PODFILE CHECKSUM: 5ea5a666e4f3c83d3245640bc47a4546c3d496ef
+PODFILE CHECKSUM: 7999500fa330e0508ad64f3e4764e43b19ae76cb
 
 COCOAPODS: 1.15.2
