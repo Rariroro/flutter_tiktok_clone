@@ -6,12 +6,6 @@ import 'package:flutter_tiktok_clone/features/authentication/password_screen.dar
 import 'package:flutter_tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:flutter_tiktok_clone/features/authentication/widgets/form_button.dart';
 
-class EmailScreenArgs {
-  final String username;
-
-  EmailScreenArgs({required this.username});
-}
-
 class EmailScreen extends ConsumerStatefulWidget {
   final String username;
 

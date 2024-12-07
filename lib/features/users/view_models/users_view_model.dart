@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
@@ -16,6 +15,7 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     _userRepository = ref.read(userRepo);
     _authenticationRepository = ref.read(authRepo);
 
+    // 사용자가 로그인한 경우 프로필을 찾아 반환
     if (_authenticationRepository.isLoggedIn) {
       final profile = await _userRepository
           .findProfile(_authenticationRepository.user!.uid);
@@ -25,10 +25,11 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
       }
     }
 
+    // 로그인하지 않은 경우 빈 프로필 반환
     return UserProfileModel.empty();
   }
 
-//유저프로필정보를 넣음.
+  //유저프로필정보를 넣음.
   Future<void> createProfile(UserCredential credential) async {
     if (credential.user == null) {
       throw Exception("Account not created");
@@ -51,7 +52,7 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     state = AsyncValue.data(profile);
   }
 
-//model에 아바타 있다는 것을 알려줌
+  //model에 아바타 있다는 것을 알려줌
   Future<void> onAvatarUpload() async {
     //여기서 state에 로딩을 안하는 이유는 아바타 뷰모델에서 하기떄문
     if (state.value == null) return;
@@ -60,7 +61,6 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     state = AsyncValue.data(state.value!.copyWith(hasAvatar: true));
 
     //내가 원하는 값만 수정. state.value는 UserProfileModel임
-
     await _userRepository.updateUser(state.value!.uid, {"hasAvatar": true});
   }
 
@@ -69,6 +69,7 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
     state = const AsyncValue.loading();
     final updatedProfile = state.value!.copyWith(bio: bio, link: link);
 
+    // 프로필 업데이트 시도 및 결과 처리
     state = await AsyncValue.guard(
       () async {
         await _userRepository
@@ -79,9 +80,16 @@ class UsersViewModel extends AsyncNotifier<UserProfileModel> {
   }
 }
 
+// UsersViewModel을 제공하는 프로바이더 정의
 final usersProvider = AsyncNotifierProvider<UsersViewModel, UserProfileModel>(
   () => UsersViewModel(),
 );
 
 //riverpod에서 vm은 크게 state, provider, builder의 특성이 있다.
-//state값은, 즉 state.value는 buil에서 리턴한 값이다. 
+//state값은, 즉 state.value는 buil에서 리턴한 값이다.
+
+// 주요 특징:
+// 1. AsyncNotifier를 사용하여 비동기 상태 관리
+// 2. 사용자 프로필 생성, 업데이트, 아바타 업로드 기능 구현
+// 3. Riverpod의 state를 활용한 상태 관리 및 업데이트
+// 4. Firebase와 연동하여 사용자 데이터 처리

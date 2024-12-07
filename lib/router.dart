@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tiktok_clone/common/widget/main_navigation_screen.dart';
+import 'package:flutter_tiktok_clone/features/main_navigation/main_navigation_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/login_screen.dart';
 import 'package:flutter_tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:flutter_tiktok_clone/features/authentication/sign_up_screen.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_tiktok_clone/features/videos/views/video_recording_scree
 import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider((ref) {
-  //ref.watch(authState); //이 코드를 라우터에 바로 넣으면,변화있을때 아래가 리빌드
+  ref.watch(authState); //이 코드를 라우터에 바로 넣으면,변화있을때 아래가 리빌드
   return GoRouter(
       initialLocation: "/home",
       redirect: (context, state) {
